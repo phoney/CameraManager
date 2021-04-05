@@ -107,6 +107,12 @@ public enum CaptureError: Error {
     case assetNotSaved
 }
 
+public struct ZoomInfo {
+    public var zoomScale: CGFloat
+    public var minZoomScale: CGFloat
+    public var maxZoomScale: CGFloat
+}
+
 /// Class for handling iDevices custom camera usage
 open class CameraManager: NSObject, AVCaptureFileOutputRecordingDelegate, UIGestureRecognizerDelegate {
     // MARK: - Public properties
@@ -190,6 +196,7 @@ open class CameraManager: NSObject, AVCaptureFileOutputRecordingDelegate, UIGest
     }
     
     /**
+     NOT USED
      Property to determine if manager should enable pinch to zoom on camera preview.
      - note: Default value is **true**
      */
@@ -216,14 +223,16 @@ open class CameraManager: NSObject, AVCaptureFileOutputRecordingDelegate, UIGest
     
     /// Property to determine if current device has front camera.
     open var hasFrontCamera: Bool = {
-        let frontDevices = AVCaptureDevice.videoDevices.filter { $0.position == .front }
-        return !frontDevices.isEmpty
+        AVCaptureDevice.videoDevices.contains(where: { $0.position == .front })
+//        let frontDevices = AVCaptureDevice.videoDevices.filter { $0.position == .front }
+//        return !frontDevices.isEmpty
     }()
     
     /// Property to determine if current device has flash.
     open var hasFlash: Bool = {
-        let hasFlashDevices = AVCaptureDevice.videoDevices.filter { $0.hasFlash }
-        return !hasFlashDevices.isEmpty
+        AVCaptureDevice.videoDevices.contains(where: { $0.hasFlash })
+//        let hasFlashDevices = AVCaptureDevice.videoDevices.filter { $0.hasFlash }
+//        return !hasFlashDevices.isEmpty
     }()
     
     /**
@@ -333,7 +342,18 @@ open class CameraManager: NSObject, AVCaptureFileOutputRecordingDelegate, UIGest
         
         return .off
     }
-    
+
+    /// This closure is called when the user zooms using the pinch zoom gesture recognizer
+    open var userDidZoomCallback: ((_ scale: CGFloat) -> Void)?
+
+    /// The maximum value of the maxZoomScale
+    open var zoomLimit: CGFloat = 10
+
+    /// return Info about the current zoom state
+    open var zoomInfo: ZoomInfo {
+        ZoomInfo(zoomScale: zoomScale, minZoomScale: beginZoomScale, maxZoomScale: maxZoomScale)
+    }
+
     // MARK: - Private properties
     
     fileprivate var locationManager: CameraLocationManager?
@@ -954,6 +974,7 @@ open class CameraManager: NSObject, AVCaptureFileOutputRecordingDelegate, UIGest
         }
         if allTouchesOnPreviewLayer {
             _zoom(recognizer.scale)
+            userDidZoomCallback?(recognizer.scale)
         }
     }
     
@@ -1542,16 +1563,16 @@ open class CameraManager: NSObject, AVCaptureFileOutputRecordingDelegate, UIGest
     fileprivate func _setupMaxZoomScale() {
         var maxZoom = CGFloat(1.0)
         beginZoomScale = CGFloat(1.0)
-        
+
         if cameraDevice == .back, let backCameraDevice = backCameraDevice {
-            maxZoom = backCameraDevice.activeFormat.videoMaxZoomFactor
+            maxZoom = min(backCameraDevice.activeFormat.videoMaxZoomFactor, zoomLimit)
         } else if cameraDevice == .front, let frontCameraDevice = frontCameraDevice {
-            maxZoom = frontCameraDevice.activeFormat.videoMaxZoomFactor
+            maxZoom = min(frontCameraDevice.activeFormat.videoMaxZoomFactor, zoomLimit)
         }
-        
+
         maxZoomScale = maxZoom
     }
-    
+
     fileprivate func _checkIfCameraIsAvailable() -> CameraState {
         let deviceHasCamera = UIImagePickerController.isCameraDeviceAvailable(UIImagePickerController.CameraDevice.rear) || UIImagePickerController.isCameraDeviceAvailable(UIImagePickerController.CameraDevice.front)
         if deviceHasCamera {
