@@ -1,0 +1,151 @@
+disabled_rules: # rule identifiers to exclude from running
+  - conditional_returns_on_newline
+  - cyclomatic_complexity
+  - file_length
+#  - force_cast
+#  - force_try
+  - force_unwrapping
+  - function_body_length
+  - identifier_name
+  - line_length
+  - object_literal
+  - private_outlet
+  - todo
+  - trailing_comma
+  - trailing_newline
+  - type_body_length
+  - unused_closure_parameter
+#  - missing_docs
+#  - operator_usage_whitespace
+#  - number_separator
+opt_in_rules: # some rules are only opt-in
+# Commented out rules are either inconvenient or only valid sometimes
+# or net yet ready to deal with them or I don't agree with them
+  - anyobject_protocol
+  - array_init
+  - attributes
+  - closure_end_indentation
+  - closure_spacing
+  - collection_alignment
+  - colon
+#  - conditional_returns_on_newline
+  - contains_over_filter_count
+  - contains_over_filter_is_empty
+  - contains_over_first_not_nil
+  - contains_over_range_nil_comparison
+#  - convenience_type
+#  - discouraged_optional_boolean
+  - discouraged_optional_collection
+  - discouraged_object_literal
+  - empty_collection_literal
+  - empty_count
+  - empty_string
+  - enum_case_associated_values_count
+#  - explicit_acl
+#  - explicit_enum_raw_value
+  - explicit_init
+#  - explicit_top_level_acl
+#  - explicit_type_interface
+#  - extension_access_modifier
+  - fallthrough
+  - file_name_no_space
+#  - file_types_order
+  - first_where
+  - flatmap_over_map_reduce
+  - force_unwrapping
+  - for_where
+  - function_default_parameter_at_end
+  - identical_operands
+#  - indentation_width
+  - joined_default_parameter
+  - last_where
+  - legacy_multiple
+  - legacy_random
+  - let_var_whitespace
+  - literal_expression_end_indentation
+  - lower_acl_than_parent
+  - modifier_order
+  - nimble_operator
+#  - nslocalizedstring_key
+#  - nslocalizedstring_require_bundle
+#  - number_separator
+  - object_literal
+  - operator_usage_whitespace
+  - override_in_extension
+  - overridden_super_call
+#  - pattern_matching_keywords
+  - prefer_self_type_over_type_of_self
+#  - prefixed_toplevel_constant
+#  - private_action
+  - private_outlet
+#  - prohibited_interface_builder
+  - prohibited_super_call
+  - quick_discouraged_call
+  - quick_discouraged_focused_test
+  - quick_discouraged_pending_test
+  - raw_value_for_camel_cased_codable_enum
+  - reduce_into
+  - redundant_nil_coalescing
+  - redundant_optional_initialization
+#  - redundant_type_annotation
+#  - required_deinit
+  - required_enum_case
+  - sorted_first_last
+#  - sorted_imports
+  - static_operator
+#  - strict_fileprivate
+#  - strong_iboutlet
+  - switch_case_on_newline
+  - toggle_bool
+#  - trailing_closure
+  - trailing_newline
+  - unavailable_function
+  - unneeded_parentheses_in_closure_argument
+  - unowned_variable_capture
+#  - untyped_error_in_catch
+  - unused_declaration
+  - unused_import
+#  - vertical_whitespace_between_cases
+#  - vertical_whitespace_closing_braces
+#  - vertical_whitespace_opening_braces
+  - yoda_condition
+#  - implicitly_unwrapped_optional
+# Configurable Rules
+attributes:
+    always_on_same_line: ["@objc", "@IBAction", "@discardableResult"]
+    always_on_line_above: []
+colon:
+    flexible_right_spacing: false
+    apply_to_dictionaries: false
+identifier_name:
+    min_length: 2 # only warning
+    max_length: 60
+    allowed_symbols: 
+    excluded: # excluded via string array
+    - id
+    - URL
+    - vc
+    - nc
+    - tc
+    - f
+    - p
+    - x
+    - y
+    - i
+    - r
+    - s
+    - e
+    - DebugPrint(_:separator:terminator:)
+    - DebugPrint(_:)
+private_outlet:
+  allow_private_set: true
+type_name:
+  min_length: 4 # only warning
+  max_length:   # warning and error
+    warning: 60
+    error: 70
+  excluded: iPhone # excluded via string
+included: # paths to include during linting. `--path` is ignored if present.
+  - Sources/
+excluded: # paths to ignore during linting. Takes precedence over `included`.
+  - Pods
